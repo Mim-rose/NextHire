@@ -44,6 +44,19 @@ const SignIn = () => {
     }
   };
 
+  // ✅ NEW: Google Sign-In Handler
+  const handleGoogleSignIn = async () => {
+    clearAuthState();
+    try {
+      const result = await signInWithGoogle();
+      if (result) {
+        navigate(from, { replace: true });
+      }
+    } catch (error) {
+      // Error handled in AuthProvider
+    }
+  };
+
   const handlePasswordReset = async (e) => {
     e.preventDefault();
     await resetPassword(resetEmail);
@@ -163,7 +176,8 @@ const SignIn = () => {
                 </Link>
               </p>
               <button
-                onClick={signInWithGoogle}
+                onClick={handleGoogleSignIn}
+                disabled={loading}
                 className="w-full py-2 bg-white text-gray-800 border border-gray-300 rounded-lg hover:bg-gray-100 flex items-center justify-center gap-2"
               >
                 <FcGoogle className="text-xl" />
