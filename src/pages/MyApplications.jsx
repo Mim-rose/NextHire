@@ -3,7 +3,7 @@ import useAuth from '../hooks/useAuth'
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import axios from 'axios';
-
+const API_URL = import.meta.env.VITE_API_URL;
 
 const MyApplications = () => {
     const {user} = useAuth();
@@ -14,7 +14,7 @@ const MyApplications = () => {
     }, [user.email]);
 
     const fetchData = () => {
-        axios.get(`http://localhost:3000/job-applications?email=${user.email}`, { withCredentials: true })
+        axios.get(`${API_URL}/job-applications?email=${user.email}`, { withCredentials: true })
   .then(res => {
     const data = res.data;
     if (data.length === 0) {
@@ -40,7 +40,7 @@ const MyApplications = () => {
             confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch(`http://localhost:3000/job-applications/${id}`, {
+                fetch(`${API_URL}/job-applications/${id}`, {
                     method: 'DELETE'
                 })
                 .then(res => res.json())

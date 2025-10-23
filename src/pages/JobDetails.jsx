@@ -6,13 +6,14 @@ import { FaBriefcase, FaShareAlt, FaCheckCircle } from 'react-icons/fa';
 import DJ6 from '../assets/images/DJ6.jpg';
 
 const fallbackLogo = 'https://via.placeholder.com/64?text=Logo';
+const API_URL = import.meta.env.VITE_API_URL;
 
 const JobDetails = () => {
   const { id } = useParams();
   const [job, setJob] = useState(null);
 
   useEffect(() => {
-    fetch(`http://localhost:3000/jobs/${id}`)
+    fetch(`${API_URL}/jobs/${id}`)
       .then(res => res.json())
       .then(data => setJob(data))
       .catch(err => console.error(err));

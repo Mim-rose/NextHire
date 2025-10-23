@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import Swal from 'sweetalert2';
-
+const API_URL = import.meta.env.VITE_API_URL;
 
 const JobApply = () => {
   const { id } = useParams();
@@ -11,7 +11,7 @@ const JobApply = () => {
   const [job, setJob] = useState(null);
 
   useEffect(() => {
-    fetch(`http://localhost:3000/jobs/${id}`)
+    fetch(`${API_URL}/jobs/${id}`)
       .then(res => res.json())
       .then(data => setJob(data))
       .catch(err => console.error(err));
@@ -54,7 +54,7 @@ const JobApply = () => {
   applicant_coverLetter: coverLetter // ✅ Clear
 };
        // TODO: Send data to backend or Firebase
-        fetch('http://localhost:3000/job-applications', {
+        fetch(`${API_URL}/job-applications`, {
   method: 'POST',
   headers: {
     'content-type': 'application/json',

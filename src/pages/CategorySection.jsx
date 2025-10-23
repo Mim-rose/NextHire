@@ -5,6 +5,8 @@ import {
   FaBullhorn, FaProductHunt, FaBug, FaShieldAlt
 } from "react-icons/fa";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const iconMap = {
   "Business": <FaBriefcase />,
   "Content": <FaPenNib />,
@@ -21,7 +23,7 @@ const CategorySection = () => {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/categories")
+    fetch(`${API_URL}/api/categories`)
       .then(res => res.json())
       .then(data => setCategories(data));
   }, []);

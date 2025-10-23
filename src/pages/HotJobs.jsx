@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import HotJobsCard from './HotJobsCard';
+const API_URL = import.meta.env.VITE_API_URL;
 
 const HotJobs = () => {
     const [jobs, setJobs] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch('http://localhost:3000/jobs/featured')
+        fetch(`${API_URL}/jobs/featured`)
             .then(res => res.json())
             .then(data => {
                 setJobs(data);

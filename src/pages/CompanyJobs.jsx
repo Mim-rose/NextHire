@@ -2,13 +2,17 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import HotJobsCard from "./HotJobsCard";
+
+const API_URL = import.meta.env.VITE_API_URL;
 const CompanyJobs = () => {
   const { companyName } = useParams();
   const [jobs, setJobs] = useState([]);
 
+  
+
  useEffect(() => {
   const encodedName = encodeURIComponent(companyName);
-  fetch(`http://localhost:3000/api/companies/${encodedName}`)
+  fetch(`${API_URL}/api/companies/${encodedName}`)
     .then((res) => {
       if (!res.ok) {
         throw new Error("Network response was not ok");

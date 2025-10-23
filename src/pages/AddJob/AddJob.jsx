@@ -3,7 +3,7 @@ import Swal from "sweetalert2";
 import { useRef } from "react";
 import { useNavigate } from 'react-router-dom';
 import useAuth from "../../hooks/useAuth";
-
+const API_URL = import.meta.env.VITE_API_URL;
 const AddJob = () => {
     const formRef = useRef();
     const navigate = useNavigate();
@@ -29,7 +29,7 @@ const AddJob = () => {
   newJob.responsibilities = newJob.responsibilities.split('\n');
   console.log(newJob);
 
-   fetch('http://localhost:3000/jobs', {
+   fetch(`${API_URL}/jobs`, {
 
     method: 'POST',
     headers: {

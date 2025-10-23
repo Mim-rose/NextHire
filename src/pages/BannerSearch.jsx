@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const BannerSearch = () => {
   const [companies, setCompanies] = useState([]);
   const [locations, setLocations] = useState([]);
@@ -13,7 +15,7 @@ const BannerSearch = () => {
 
   // Fetch companies
   useEffect(() => {
-    fetch('http://localhost:3000/api/companies')
+    fetch(`${API_URL}/api/companies`)
       .then(res => res.json())
       .then(data => {
         setCompanies(data);
@@ -23,7 +25,7 @@ const BannerSearch = () => {
 
   // Fetch locations
   useEffect(() => {
-    fetch('http://localhost:3000/api/locations')
+    fetch(`${API_URL}/api/locations`)  // ✅ CORRECT
       .then(res => res.json())
       .then(data => {
         setLocations(data);

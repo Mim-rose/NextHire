@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import HotJobsCard from "./HotJobsCard";
 import Fuse from "fuse.js"; // Optional fuzzy matching
-
+const API_URL = import.meta.env.VITE_API_URL;
 const SearchResults = () => {
   const [searchParams] = useSearchParams();
   const query = searchParams.get("q");
@@ -13,7 +13,7 @@ const SearchResults = () => {
   useEffect(() => {
     if (!query) return;
 
-    fetch(`http://localhost:3000/api/search?q=${encodeURIComponent(query)}`)
+    fetch(`${API_URL}/api/search?q=${encodeURIComponent(query)}`)
       .then((res) => res.json())
       .then((data) => {
         setJobs(data);

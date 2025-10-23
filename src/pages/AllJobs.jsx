@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import HotJobsCard from './HotJobsCard';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const AllJobs = () => {
   const [jobs, setJobs] = useState([]);
   const [page, setPage] = useState(1);
@@ -14,7 +16,7 @@ const AllJobs = () => {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`http://localhost:3000/jobs/all?page=${page}&limit=20`);
+        const res = await fetch(`${API_URL}/jobs/all?page=${page}&limit=20`);
         if (!res.ok) throw new Error('Failed to fetch jobs');
         const newJobs = await res.json();
         

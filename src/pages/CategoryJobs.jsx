@@ -4,9 +4,11 @@ import HotJobsCard from "./HotJobsCard";
 const CategoryJobs = () => {
   const { categoryName } = useParams();
   const [jobs, setJobs] = useState([]);
+  const API_URL = import.meta.env.VITE_API_URL;
+
 
   useEffect(() => {
-    fetch(`http://localhost:3000/jobs/category/${categoryName}`)
+    fetch(`${API_URL}/jobs/category/${categoryName}`)
       .then(res => res.json())
       .then(data => setJobs(data));
   }, [categoryName]);

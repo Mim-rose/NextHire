@@ -14,6 +14,8 @@ import {
 import { auth } from '../firebase/firebase.init';
 import axios from 'axios';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -54,30 +56,37 @@ const AuthProvider = ({ children }) => {
       }
     },
 
-    signIn: async (email, password) => {
+  signIn: async (email, password) => {
   setLoading(true);
   setAuthError(null);
   try {
     const result = await signInWithEmailAndPassword(auth, email, password);
-    
+
     await axios.post(
-      'http://localhost:3000/jwt',
+      `${API_URL}/jwt`,
       { email: result.user.email },
       { withCredentials: true }
     );
-    
-    // No need to handle token manually - it's HTTP-only cookie
+
     return result;
   } catch (error) {
-    setAuthError(error.message);
-    throw error;
+    // ✅ Friendly error mapping
+    if (error.code === 'auth/user-not-found') {
+      setAuthError("No account found with this email. Try signing up.");
+    } else if (error.code === 'auth/wrong-password') {
+      setAuthError("Incorrect password. Please try again.");
+    } else if (error.code === 'auth/invalid-email') {
+      setAuthError("Invalid email format.");
+    } else {
+      setAuthError("Login failed. Please check your credentials.");
+    }
+
+    throw error; // still throw for internal handling
   } finally {
     setLoading(false);
   }
 },
-
      
-
     signInWithGoogle: async () => {
       setLoading(true);
       setAuthError(null);
@@ -95,7 +104,7 @@ const AuthProvider = ({ children }) => {
   setLoading(true);
   try {
     await signOut(auth);
-    await axios.post('http://localhost:3000/logout', {}, { 
+    await axios.post(`${API_URL}/logout`, {}, { 
       withCredentials: true 
     });
   } catch (error) {

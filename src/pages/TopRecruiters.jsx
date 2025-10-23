@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom"; // ✅ Add this
+import { Link } from "react-router-dom";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const TopRecruiters = ({ showAll = false }) => {
   const [companies, setCompanies] = useState([]);
@@ -7,30 +8,44 @@ const TopRecruiters = ({ showAll = false }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchCompanies = async () => {
+    const fetchCompanies = async (retries = 3) => {
       try {
         const endpoint = showAll
-          ? "http://localhost:3000/api/companies/all"
-          : "http://localhost:3000/api/companies";
+          ? `${API_URL}/api/companies/all`
+          : `${API_URL}/api/companies`;
 
         const res = await fetch(endpoint);
 
         if (!res.ok) {
-          throw new Error("Network response was not ok");
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
+        const contentType = res.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+          throw new Error("Response is not JSON");
         }
 
         const data = await res.json();
 
         if (Array.isArray(data)) {
           setCompanies(data);
+          setError(null);
         } else {
           throw new Error("Unexpected response format");
         }
       } catch (err) {
         console.error("Failed to fetch companies:", err);
-        setError("Unable to load recruiters at the moment.");
+        
+        if (retries > 0) {
+          console.log(`Retrying... (${retries} attempts left)`);
+          setTimeout(() => fetchCompanies(retries - 1), 1000);
+        } else {
+          setError("Unable to load recruiters at the moment.");
+        }
       } finally {
-        setLoading(false);
+        if (retries === 0) {
+          setLoading(false);
+        }
       }
     };
 
@@ -69,7 +84,7 @@ const TopRecruiters = ({ showAll = false }) => {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
         {visibleCompanies.map((company) => (
           <Link
-            to={`/companies/${encodeURIComponent(company.name)}`} // ✅ Make it clickable
+            to={`/companies/${encodeURIComponent(company.name)}`}
             key={company.name}
             className="bg-gray-50 rounded-xl p-6 shadow hover:shadow-lg transition duration-300 block"
           >

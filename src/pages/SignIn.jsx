@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react"; // useEffect might be needed in other scenarios, but not for this fix
+import React, { useState, useContext } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Lottie from "lottie-react";
@@ -24,10 +24,7 @@ const SignIn = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // ✅ Get the 'from' location. If it doesn't exist, default to '/'
   const from = location.state?.from?.pathname || "/";
-
-  // ❌ The problematic navigate() call has been REMOVED from here.
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -39,21 +36,17 @@ const SignIn = () => {
     clearAuthState();
     try {
       const user = await signIn(formData.email, formData.password);
-      // ✅ Check if sign-in was successful before navigating
       if (user) {
-        // ✅ Navigate to the intended page after successful login
         navigate(from, { replace: true });
       }
     } catch (error) {
-      // Error is handled in AuthProvider, which sets the 'error' state
+      // Error handled in AuthProvider
     }
   };
 
   const handlePasswordReset = async (e) => {
     e.preventDefault();
     await resetPassword(resetEmail);
-    // Optional: You could clear the email field after submission
-    // setResetEmail("");
   };
 
   return (
@@ -65,10 +58,17 @@ const SignIn = () => {
         </h2>
 
         {error && (
-          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg">
-            {error}
-          </div>
-        )}
+  <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg">
+    {error}
+    {error.includes("No account found") && (
+      <p className="mt-2">
+        <Link to="/signup" className="text-indigo-600 underline">
+          Create an account
+        </Link>
+      </p>
+    )}
+  </div>
+)}
         {success && (
           <div className="mb-4 p-3 bg-green-100 text-green-700 rounded-lg">
             {success}
@@ -84,6 +84,7 @@ const SignIn = () => {
               placeholder="your@email.com"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg"
               required
+              autoComplete="email"
             />
             <button
               type="submit"
@@ -96,7 +97,7 @@ const SignIn = () => {
               type="button"
               onClick={() => {
                 setShowForgotPassword(false);
-                clearAuthState(); // Also clear errors/success messages when switching views
+                clearAuthState();
               }}
               className="w-full mt-2 text-indigo-600 hover:underline"
             >
@@ -114,6 +115,7 @@ const SignIn = () => {
                 placeholder="Email"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg"
                 required
+                autoComplete="email"
               />
               <div className="relative">
                 <input
@@ -124,11 +126,12 @@ const SignIn = () => {
                   placeholder="Password"
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg"
                   required
+                  autoComplete="current-password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((prev) => !prev)}
-                  className="absolute right-3 top-2.5 text-gray-500" // Adjusted for better alignment
+                  className="absolute right-3 top-2.5 text-gray-500"
                 >
                   {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </button>
@@ -147,18 +150,18 @@ const SignIn = () => {
               <button
                 onClick={() => {
                   setShowForgotPassword(true);
-                  clearAuthState(); // Clear errors/success messages when switching views
+                  clearAuthState();
                 }}
                 className="text-indigo-600 hover:underline"
               >
                 Forgot Password?
               </button>
-               <p>
-                Don't have an account?{' '}
+              <p>
+                Don't have an account?{" "}
                 <Link to="/signup" className="text-indigo-600 hover:underline">
-                    Sign Up
+                  Sign Up
                 </Link>
-                </p>
+              </p>
               <button
                 onClick={signInWithGoogle}
                 className="w-full py-2 bg-white text-gray-800 border border-gray-300 rounded-lg hover:bg-gray-100 flex items-center justify-center gap-2"
