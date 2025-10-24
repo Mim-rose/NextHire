@@ -67,7 +67,7 @@ const AuthProvider = ({ children }) => {
       { email: result.user.email },
       { withCredentials: true }
     );
-
+ setAuthSuccess('Login successful!'); // ✅ Add this
     return result;
   } catch (error) {
     // ✅ Friendly error mapping

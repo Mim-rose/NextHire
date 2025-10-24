@@ -8,49 +8,49 @@ const TopRecruiters = ({ showAll = false }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchCompanies = async (retries = 3) => {
-      try {
-        const endpoint = showAll
-          ? `${API_URL}/api/companies/all`
-          : `${API_URL}/api/companies`;
+  const fetchCompanies = async (retries = 3) => {
+    try {
+      const endpoint = showAll
+        ? `${API_URL}/api/companies/all`
+        : `${API_URL}/api/companies`;
 
-        const res = await fetch(endpoint);
+      const res = await fetch(endpoint);
 
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-
-        const contentType = res.headers.get("content-type");
-        if (!contentType || !contentType.includes("application/json")) {
-          throw new Error("Response is not JSON");
-        }
-
-        const data = await res.json();
-
-        if (Array.isArray(data)) {
-          setCompanies(data);
-          setError(null);
-        } else {
-          throw new Error("Unexpected response format");
-        }
-      } catch (err) {
-        console.error("Failed to fetch companies:", err);
-        
-        if (retries > 0) {
-          console.log(`Retrying... (${retries} attempts left)`);
-          setTimeout(() => fetchCompanies(retries - 1), 1000);
-        } else {
-          setError("Unable to load recruiters at the moment.");
-        }
-      } finally {
-        if (retries === 0) {
-          setLoading(false);
-        }
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
       }
-    };
 
-    fetchCompanies();
-  }, [showAll]);
+      const contentType = res.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        throw new Error("Response is not JSON");
+      }
+
+      const data = await res.json();
+
+      if (Array.isArray(data)) {
+        setCompanies(data);
+        setError(null);
+      } else {
+        throw new Error("Unexpected response format");
+      }
+
+      setLoading(false); // <- crucial: stop loading on success
+    } catch (err) {
+      console.error("Failed to fetch companies:", err);
+
+      if (retries > 0) {
+        console.log(`Retrying... (${retries} attempts left)`);
+        setTimeout(() => fetchCompanies(retries - 1), 1000);
+      } else {
+        setError("Unable to load recruiters at the moment.");
+        setLoading(false); // <- stop loading after final failure
+      }
+    }
+  };
+
+  fetchCompanies();
+}, [showAll]);
+
 
   if (loading) {
     return (
