@@ -2,7 +2,7 @@
 
 NextHire is a full-stack job search platform built with React (frontend) and Node.js/Express/MongoDB (backend). Features include job browsing, smart search, applications, and recruiter tools.
 
-🌐 **Live Demo:** [https://next-hire-gamma.vercel.app/]
+🌐 **Live Demo:** [https://next-hire-nine.vercel.app/]
 
 ---
 
